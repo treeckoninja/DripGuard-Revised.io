@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DripGuard - Stay Informed</title>
+    <!-- Use Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #0c0d12;
+            color: #d1d5db; /* A light gray for text */
+        }
+        .highlight {
+            background-color: rgba(251, 191, 36, 0.5); /* Tailwind's amber-400 with opacity */
+            padding: 2px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200">
+
+    <!-- Message Box/Modal -->
+    <div id="message-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-teal-500">
+            <h3 class="text-2xl font-bold text-teal-400 mb-2">Notice</h3>
+            <p class="mb-4">DripGuard is currently a conceptual project. There's no download available yet, but stay tuned!</p>
+            <button id="close-modal-btn" class="w-full bg-teal-500 text-white font-semibold py-2 rounded-xl hover:bg-teal-600 transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 md:py-16">
+
+        <!-- Hero Section -->
+        <header class="text-center mb-16 md:mb-24">
+            <div class="flex flex-col items-center justify-center mb-6">
+                <!-- DripGuard Logo (Inline SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-20 h-20 text-teal-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">
+                    <path fill-rule="evenodd" d="M14.47 5.75A.75.75 0 0 1 15 6.4v.752a7.5 7.5 0 0 1-5.632 7.348v2.09a.75.75 0 0 1-1.396.446l-4.5-7.5A.75.75 0 0 1 4.5 9h1a.75.75 0 0 0 .75-.75V8.197A6.002 6.002 0 0 1 12 6c.928 0 1.834.195 2.67.55Zm.53 9.497a8.25 8.25 0 0 1 4.706-9.15.75.75 0 1 0-.67-.745 6.75 6.75 0 0 0-4.032 7.425.75.75 0 0 1-.396.446l-4.5 7.5a.75.75 0 0 0 1.396.446l4.5-7.5Z" clip-rule="evenodd" />
+                    <path d="M18.665 14.508c.55-.264 1.133-.45 1.73-.532A.75.75 0 0 0 21 13.25h-1a.75.75 0 0 0-.665.492c-.378.89-.785 1.766-1.22 2.62a.75.75 0 1 1-1.298-.75c.38-.796.745-1.57 1.093-2.324Z" />
+                </svg>
+                <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500 mt-4">
+                    DripGuard
+                </h1>
+            </div>
+            <p class="text-2xl md:text-3xl font-semibold text-gray-300 max-w-3xl mx-auto mb-8">
+                Don’t get dripped by AI, stay informed.
+            </p>
+            <button id="download-btn" class="px-8 py-4 bg-teal-500 text-white font-bold text-lg rounded-full shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+                Download Now
+            </button>
+        </header>
+
+        <!-- Prototype Section -->
+        <section class="max-w-4xl mx-auto mb-16 md:mb-24 p-6 md:p-10 bg-gray-800 rounded-3xl shadow-xl border border-gray-700">
+            <h2 class="text-4xl font-bold text-center text-teal-400 mb-6">Try the DripGuard Prototype</h2>
+            <p class="text-lg text-center leading-relaxed mb-6 text-gray-400">
+                Paste any text below to see DripGuard's heuristic detection in action.
+            </p>
+            <textarea id="text-input" rows="8" class="w-full p-4 rounded-xl bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow resize-y mb-4" placeholder="Paste your text here to check for 'drip'..."></textarea>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <button id="detect-btn" class="w-full md:w-auto px-8 py-3 bg-sky-500 text-white font-bold rounded-full shadow-lg hover:bg-sky-600 transition-all duration-300 transform hover:scale-105">
+                    Detect Drip
+                </button>
+                <button id="clear-btn" class="w-full md:w-auto px-8 py-3 bg-gray-600 text-white font-bold rounded-full shadow-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
+                    Clear Text
+                </button>
+            </div>
+
+            <!-- Analysis Results -->
+            <div id="results" class="mt-8 hidden">
+                <h3 class="text-3xl font-bold text-center text-sky-400 mb-4">Analysis Results</h3>
+                <div class="flex flex-col items-center justify-center md:flex-row md:justify-around gap-4 md:gap-8 mb-6">
+                    <div class="text-center">
+                        <p class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500" id="drip-score">0%</p>
+                        <p class="text-xl font-semibold text-gray-300 mt-1">Drip Score</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-semibold text-gray-300">Heuristic Flags</p>
+                        <ul class="list-disc list-inside text-gray-400 text-sm mt-2" id="flags-list">
+                            <!-- Flags will be inserted here -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-2xl border border-gray-700">
+                    <h4 class="text-2xl font-bold text-gray-200 mb-4">Content Analysis:</h4>
+                    <div id="highlighted-text" class="text-lg leading-relaxed text-gray-300">
+                        <!-- Highlighted text will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Section (from original website) -->
+        <section class="max-w-4xl mx-auto mb-16 md:mb-24 p-6 md:p-10 bg-gray-800 rounded-3xl shadow-xl border border-gray-700">
+            <h2 class="text-4xl font-bold text-center text-teal-400 mb-6">The Problem DripGuard Solves</h2>
+            <p class="text-lg text-center leading-relaxed">
+                The sheer volume of AI-generated content is making it harder than ever to tell what's real and what's synthetic. This isn't just about minor inaccuracies; it can lead to misinformed decisions, the rapid spread of misinformation, and a general erosion of trust in online sources. DripGuard aims to tackle these challenges head-on by giving everyone an easy-to-use tool for content verification.
+            </p>
+        </section>
+
+        <!-- Heuristic Approach Section (from original website) -->
+        <section class="mb-16 md:mb-24">
+            <h2 class="text-4xl font-bold text-center text-sky-400 mb-8">DripGuard's Heuristic Approach</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">
+                Beyond relying solely on complex machine learning models, DripGuard incorporates heuristic rules—quick, practical checks that offer immediate clues about content origin. Think of these as "sniff tests" that can often flag AI-generated text quickly, even before deeper analysis.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Repetitive Phrasing Card -->
+                <div class="bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-700 hover:shadow-2xl transition-shadow duration-300">
+                    <div class="flex items-center justify-center mb-4 text-sky-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m-3-6h.75m-4.5 0h.75m3 0h.75m3 0h.75m-9-3h1.5m-1.5 3h1.5m-1.5 3h1.5m-3-6h.75m-4.5 0h.75m3 0h.75m3 0h.75" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-100 mb-2">Repetitive Phrasing</h3>
+                    <p class="text-center text-gray-400">AI sometimes falls into predictable sentence structures or uses the same transition words repeatedly.</p>
+                </div>
+
+                <!-- Generic Language Card -->
+                <div class="bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-700 hover:shadow-2xl transition-shadow duration-300">
+                    <div class="flex items-center justify-center mb-4 text-sky-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 3.75l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.455L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.455L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.455L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.455 2.455zM19.5 16.5L18 22.5l-1.5-6h-3M18 16.5v-2.25" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-100 mb-2">Generic Language</h3>
+                    <p class="text-center text-gray-400">A lack of specific detail or overly generalized statements can be a red flag for synthetic content.</p>
+                </div>
+
+                <!-- Unnatural Flow Card -->
+                <div class="bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-700 hover:shadow-2xl transition-shadow duration-300">
+                    <div class="flex items-center justify-center mb-4 text-sky-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m-3-6h.75m-4.5 0h.75m3 0h.75m3 0h.75m-9-3h1.5m-1.5 3h1.5m-1.5 3h1.5m-3-6h.75m-4.5 0h.75m3 0h.75m3 0h.75" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-100 mb-2">Unnatural Flow</h3>
+                    <p class="text-center text-gray-400">Sentences that are grammatically correct but just "don't sound quite right" or lack human-like variation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section (from original website) -->
+        <section class="mb-16 md:mb-24 p-6 md:p-10 bg-gray-800 rounded-3xl shadow-xl border border-gray-700">
+            <h2 class="text-4xl font-bold text-center text-teal-400 mb-12">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Feature 1: Intuitive UI -->
+                <div class="flex items-start">
+                    <div class="p-3 bg-teal-500 rounded-full flex-shrink-0 mr-4 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 0 15h.75a2.25 2.25 0 0 0 2.25-2.25V15a2.25 2.25 0 0 0-2.25-2.25H12a2.25 2.25 0 0 1 2.25 2.25v2.25" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-100 mb-1">Intuitive User Interface</h3>
+                        <p class="text-gray-400">A discreet icon in your browser's toolbar signals DripGuard's activity, providing instant insights on a click.</p>
+                    </div>
+                </div>
+                <!-- Feature 2: Detailed Stats -->
+                <div class="flex items-start">
+                    <div class="p-3 bg-teal-500 rounded-full flex-shrink-0 mr-4 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5a9.75 9.75 0 0 1 9.75-9.75m-9.75 9.75a9.75 9.75 0 0 0 9.75 9.75m0-19.5a2.25 2.25 0 0 1 2.25 2.25v1.5a2.25 2.25 0 0 1-2.25 2.25m-15.75-.75A.75.75 0 0 1 3 13.5v-6a.75.75 0 0 1 1.5 0v6a.75.75 0 0 1-.75.75ZM18.75 12h-7.5a.75.75 0 0 1-.75-.75V8.25A.75.75 0 0 1 11.25 7.5h7.5A.75.75 0 0 1 19.5 8.25v3.75a.75.75 0 0 1-.75.75ZM6 18.75h-.75A.75.75 0 0 1 4.5 18V6a.75.75 0 0 1 1.5 0v12a.75.75 0 0 1-.75.75Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-100 mb-1">Detailed AI Content Statistics</h3>
+                        <p class="text-gray-400">A proprietary "Drip Score" reflects the likelihood of AI generation, along with specific heuristic flags.</p>
+                    </div>
+                </div>
+                <!-- Feature 3: Fact-Backed Info -->
+                <div class="flex items-start">
+                    <div class="p-3 bg-teal-500 rounded-full flex-shrink-0 mr-4 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a6.75 6.75 0 1 1 0 13.5 6.75 6.75 0 0 1 0-13.5ZM21.75 12a9.75 9.75 0 1 0 0 0 9.75 9.75 0 0 0 0 0ZM12 9a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-.75.75H9a.75.75 0 0 1 0-1.5h2.25V9.75A.75.75 0 0 1 12 9Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-100 mb-1">Fact-Backed Information</h3>
+                        <p class="text-gray-400">For flagged content, DripGuard provides direct links to relevant academic papers via Google Scholar.</p>
+                    </div>
+                </div>
+                <!-- Feature 4: Privacy-Focused Design -->
+                <div class="flex items-start">
+                    <div class="p-3 bg-teal-500 rounded-full flex-shrink-0 mr-4 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5h-9m9 3h-9m9 3h-9m3-6v9m-3-6v9m3-6v9m6 0h.75A2.25 2.25 0 0 0 19.5 18V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25h10.5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-100 mb-1">Privacy-Focused Design</h3>
+                        <p class="text-gray-400">Built with your privacy in mind, DripGuard won't collect your personal browser data. All analysis happens locally.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why It's Needed Section (from original website) -->
+        <section class="max-w-4xl mx-auto mb-16 md:mb-24 p-6 md:p-10 bg-gray-800 rounded-3xl shadow-xl border border-gray-700">
+            <h2 class="text-4xl font-bold text-center text-sky-400 mb-8">Why DripGuard is "Desperately Needed"</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                <div class="p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-semibold text-gray-100 mb-1">Enhance Information Literacy</h3>
+                    <p class="text-gray-400 text-sm">Learn to critically evaluate online content, even when AI is involved.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-semibold text-gray-100 mb-1">Combat Misinformation</h3>
+                    <p class="text-gray-400 text-sm">Quickly identify and flag potentially misleading AI narratives.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-semibold text-gray-100 mb-1">Protect Against Deception</h3>
+                    <p class="text-gray-400 text-sm">Reduce the risk of being "dripped" by AI's subtle tactics.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-semibold text-gray-100 mb-1">Promote Trust</h3>
+                    <p class="text-gray-400 text-sm">Foster greater confidence in the information consumed from various online sources.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 border-t border-gray-800">
+        <p class="text-gray-500 text-sm">&copy; 2024 DripGuard. Don't get dripped by AI.</p>
+    </footer>
+
+    <!-- JavaScript for button functionality -->
+    <script>
+        document.getElementById('download-btn').addEventListener('click', function() {
+            document.getElementById('message-modal').classList.remove('hidden');
+        });
+
+        document.getElementById('close-modal-btn').addEventListener('click', function() {
+            document.getElementById('message-modal').classList.add('hidden');
+        });
+
+        document.getElementById('detect-btn').addEventListener('click', function() {
+            const text = document.getElementById('text-input').value;
+            if (!text) {
+                document.getElementById('results').classList.add('hidden');
+                return;
+            }
+
+            const sentences = text.match(/[^.!?]+[.!?]/g) || [text];
+            let dripScore = 0;
+            const flaggedSentences = [];
+            const flags = new Set();
+            const genericPhrases = ["in conclusion", "in summary", "the key takeaway", "unlock your potential", "it is important to note", "delve into the intricacies", "a wide range of factors", "on the other hand", "furthermore", "in contrast"];
+            const repetitiveWords = new Set();
+            const wordCounts = {};
+            const words = text.split(/\s+/).map(word => word.toLowerCase().replace(/[^a-z0-9]/g, ''));
+
+            // Tally word counts for repetitive phrasing check
+            words.forEach(word => {
+                if (word.length > 3) {
+                    wordCounts[word] = (wordCounts[word] || 0) + 1;
+                }
+            });
+
+            sentences.forEach(sentence => {
+                let isDrippy = false;
+                const lowerCaseSentence = sentence.toLowerCase();
+                
+                // Repetitive Phrasing Check
+                for (const word in wordCounts) {
+                    if (wordCounts[word] > 3) {
+                         // Check if the repetitive word appears in this specific sentence
+                         if (lowerCaseSentence.includes(word) && !repetitiveWords.has(word)) {
+                            dripScore += 10;
+                            flags.add('Detected repetitive phrasing.');
+                            repetitiveWords.add(word); // Only add the flag once per word
+                            isDrippy = true;
+                         }
+                    }
+                }
+
+                // Generic Language Check
+                genericPhrases.forEach(phrase => {
+                    if (lowerCaseSentence.includes(phrase)) {
+                        dripScore += 15;
+                        flags.add('Detected generic, AI-like language.');
+                        isDrippy = true;
+                    }
+                });
+
+                if (isDrippy) {
+                    flaggedSentences.push(sentence);
+                }
+            });
+
+            // Calculate final score
+            const totalDripScore = Math.min(100, dripScore);
+            document.getElementById('drip-score').textContent = `${totalDripScore}%`;
+
+            // Display flags
+            const flagsList = document.getElementById('flags-list');
+            flagsList.innerHTML = '';
+            if (flags.size > 0) {
+                flags.forEach(flag => {
+                    const li = document.createElement('li');
+                    li.textContent = flag;
+                    flagsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No significant "drip" detected.';
+                flagsList.appendChild(li);
+            }
+
+            // Highlight the text
+            const highlightedTextContainer = document.getElementById('highlighted-text');
+            highlightedTextContainer.innerHTML = '';
+            
+            let htmlContent = '';
+            let lastIndex = 0;
+            flaggedSentences.forEach(flaggedSentence => {
+                const index = text.indexOf(flaggedSentence, lastIndex);
+                if (index !== -1) {
+                    // Add the non-highlighted text before the flagged sentence
+                    htmlContent += text.substring(lastIndex, index);
+                    // Add the highlighted sentence
+                    htmlContent += `<span class="highlight">${flaggedSentence}</span>`;
+                    lastIndex = index + flaggedSentence.length;
+                }
+            });
+            // Add any remaining text
+            htmlContent += text.substring(lastIndex);
+            
+            highlightedTextContainer.innerHTML = htmlContent;
+            
+            document.getElementById('results').classList.remove('hidden');
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            document.getElementById('text-input').value = '';
+            document.getElementById('results').classList.add('hidden');
+        });
+    </script>
+
+</body>
+</html>
